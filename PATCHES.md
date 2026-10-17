@@ -62,7 +62,13 @@ then rebase our commits onto it and update `VERSION=` in
   translations from `<basepath>/share/locale`, hence that folder. The
   game also keeps a cache of its parsed data in `data/cache` when it can
   write there (an av install); it is rebuilt when missing, and a
-  read-only data folder (the packages) simply goes without it.
+  read-only data folder (the packages) simply goes without it. av keeps
+  files a new release does not ship when it updates, so the script stamps
+  the cache with a checksum of the game binary
+  (`data/cache/.asciiverse-build`) and drops the cache when the binary has
+  changed; otherwise the game would warn about "stale game data" after an
+  update. The script follows symlinks to itself, so it also works through
+  av's link in `~/.local/bin` (added in v0.I-1-av.2).
 - `asciiverse/nfpm.yaml`: .deb, .rpm, .apk and Arch packages; no desktop
   file. Package versions write 0.I-1 as 0.I.1 (rpm and Arch versions
   cannot hold a dash).

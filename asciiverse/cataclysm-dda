@@ -6,8 +6,31 @@
 # Saves, options and memorials go to $XDG_DATA_HOME/cataclysm-dda (by
 # default ~/.local/share/cataclysm-dda); the game makes the folder itself.
 # Arguments are passed on to the game (cataclysm --help lists them).
-here=$(cd "$(dirname "$0")" && pwd -P)
+
+# follow symlinks to this script (av links it into ~/.local/bin)
+self=$0
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=$(dirname "$self")/$link ;;
+  esac
+done
+here=$(cd "$(dirname "$self")" && pwd -P)
+
 if [ -x "$here/cataclysm" ] && [ -d "$here/data" ]; then
+  # The game caches its parsed data in data/cache and complains about "stale
+  # game data" when the data files change under it. av keeps files a new
+  # release does not ship when it updates, so the old cache would survive an
+  # update: drop it whenever the game binary is a different one.
+  build=$(cksum < "$here/cataclysm")
+  stamp="$here/data/cache/.asciiverse-build"
+  if [ -d "$here/data/cache" ] && [ "$(cat "$stamp" 2>/dev/null)" != "$build" ]; then
+    rm -rf "$here/data/cache"
+  fi
+  if [ ! -d "$here/data/cache" ] && mkdir "$here/data/cache" 2>/dev/null; then
+    echo "$build" > "$stamp"
+  fi
   exec "$here/cataclysm" --basepath "$here/" "$@"
 fi
 exec /usr/lib/cataclysm-dda/cataclysm --basepath /usr/share/cataclysm-dda/ "$@"
