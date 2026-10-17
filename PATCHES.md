@@ -59,7 +59,10 @@ then rebase our commits onto it and update `VERSION=` in
   packages put on PATH. It finds the data beside itself (an av install) or
   in `/usr/share/cataclysm-dda` (the packages, which put the program in
   `/usr/lib/cataclysm-dda`) and passes it with `--basepath`. The game reads
-  translations from `<basepath>/share/locale`, hence that folder.
+  translations from `<basepath>/share/locale`, hence that folder. The
+  game also keeps a cache of its parsed data in `data/cache` when it can
+  write there (an av install); it is rebuilt when missing, and a
+  read-only data folder (the packages) simply goes without it.
 - `asciiverse/nfpm.yaml`: .deb, .rpm, .apk and Arch packages; no desktop
   file. Package versions write 0.I-1 as 0.I.1 (rpm and Arch versions
   cannot hold a dash).

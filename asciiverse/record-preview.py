@@ -41,10 +41,12 @@ home = os.path.join(tmp, "home")
 inst = os.path.join(tmp, "game")
 os.makedirs(home)
 os.makedirs(inst)
+# a copy, not links: the game writes a cache of its data into data/cache,
+# which must not end up in stage/ and so in the packages
 for f in ("cataclysm", "cataclysm-dda"):
     shutil.copy2(os.path.join(ROOT, "stage", f), inst)
 for d in ("data", "share"):
-    os.symlink(os.path.join(ROOT, "stage", d), os.path.join(inst, d))
+    shutil.copytree(os.path.join(ROOT, "stage", d), os.path.join(inst, d))
 
 env = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": home, "USER": "player",
        "LOGNAME": "player", "TERM": "xterm-256color", "COLORTERM": "truecolor",
