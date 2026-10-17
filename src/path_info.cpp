@@ -86,16 +86,17 @@ void PATH_INFO::init_user_dir( std::string dir )
         user_dir = getenv_or_abort( "LOCALAPPDATA" );
         // On Windows userdir without dot
         dir = std::string( user_dir ) + "/cataclysm-dda/";
-#elif defined(MACOSX)
-        user_dir = getenv_or_abort( "HOME" );
-        dir = std::string( user_dir ) + "/Library/Application Support/Cataclysm/";
 #elif defined(USE_XDG_DIR)
+        // Asciiverse: the XDG data folder on macOS too
         if( ( user_dir = getenv( "XDG_DATA_HOME" ) ) ) {
             dir = std::string( user_dir ) + "/cataclysm-dda/";
         } else {
             user_dir = getenv_or_abort( "HOME" );
             dir = std::string( user_dir ) + "/.local/share/cataclysm-dda/";
         }
+#elif defined(MACOSX)
+        user_dir = getenv_or_abort( "HOME" );
+        dir = std::string( user_dir ) + "/Library/Application Support/Cataclysm/";
 #else
         user_dir = getenv_or_abort( "HOME" );
         dir = std::string( user_dir ) + "/.cataclysm-dda/";
@@ -149,21 +150,10 @@ void PATH_INFO::set_standard_filenames()
     achievementdir_value = user_dir_value + "achievements/";
     achievementdir_path_value = user_dir_path_value / "achievements";
 
-#if defined(USE_XDG_DIR)
-    const char *user_dir;
-    std::string dir;
-    if( ( user_dir = getenv( "XDG_CONFIG_HOME" ) ) ) {
-        dir = std::string( user_dir ) + "/cataclysm-dda/";
-    } else {
-        user_dir = getenv_or_abort( "HOME" );
-        dir = std::string( user_dir ) + "/.config/cataclysm-dda/";
-    }
-    config_dir_value = dir;
-    config_dir_path_value = cata_path{ cata_path::root_path::config, std::filesystem::path{} };
-#else
+    // Asciiverse: options, keymap and logs in config/ in the user folder,
+    // also with USE_XDG_DIR, so all of a player's files are in one place
     config_dir_value = user_dir_value + "config/";
     config_dir_path_value = user_dir_path_value / "config";
-#endif
     options_value = config_dir_value + "options.json";
     options_path_value = config_dir_path_value / "options.json";
     keymap_value = config_dir_value + "keymap.txt";
