@@ -1,0 +1,55 @@
+# System packages (.deb, .rpm, .apk, Arch) for Cataclysm: Dark Days Ahead,
+# built by nfpm from stage/ (asciiverse/stage.sh), the same static Linux
+# build as the av archive. The release workflow sets VERSION, RELEASE (our
+# packaging release) and ARCH (amd64 or arm64). VERSION is upstream's
+# release with its letter in lower case and the dash as a dot (0.I-1 is
+# 0.i.1), since rpm versions cannot hold a dash and apk wants lower case.
+#
+# No .desktop file on purpose: av is the one place titles are started from,
+# so Asciiverse packages never add menu entries (asciiverse/CLAUDE.md).
+#
+# cataclysm-dda (the start script) is the command; the game itself sits in
+# /usr/lib/cataclysm-dda and is started with --basepath
+# /usr/share/cataclysm-dda/, where its data and translations are. Players'
+# files go to $XDG_DATA_HOME/cataclysm-dda.
+name: cataclysm-dda
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+version_schema: none
+release: ${RELEASE}
+section: games
+priority: optional
+maintainer: Asciiverse <packages@asciiverse.sh>
+vendor: Asciiverse
+homepage: https://github.com/theasciiverse/cataclysm-dda
+license: CC-BY-SA-3.0
+description: |
+  Post-apocalyptic survival roguelike, terminal edition.
+  Scavenge, craft, build and fight to survive in a world overrun by the
+  dead and stranger things, in a huge open world drawn in text. By
+  CleverRaven and contributors (0.I-1, "Ito"), the curses build with all
+  translations, packaged by Asciiverse.
+contents:
+  - src: stage/cataclysm-dda
+    dst: /usr/bin/cataclysm-dda
+    file_info: { mode: 0755 }
+  - src: stage/cataclysm
+    dst: /usr/lib/cataclysm-dda/cataclysm
+    file_info: { mode: 0755 }
+  - src: stage/data
+    dst: /usr/share/cataclysm-dda/data
+  - src: stage/share/locale
+    dst: /usr/share/cataclysm-dda/share/locale
+  - src: stage/LICENSE.txt
+    dst: /usr/share/doc/cataclysm-dda/copyright
+    file_info: { mode: 0644 }
+  - src: stage/LICENSE-OFL-Terminus-Font.txt
+    dst: /usr/share/doc/cataclysm-dda/LICENSE-OFL-Terminus-Font.txt
+    file_info: { mode: 0644 }
+  - src: stage/LICENSE-Apache-Robot-Font.txt
+    dst: /usr/share/doc/cataclysm-dda/LICENSE-Apache-Robot-Font.txt
+    file_info: { mode: 0644 }
+  - src: stage/README.md
+    dst: /usr/share/doc/cataclysm-dda/README.md
+    file_info: { mode: 0644 }

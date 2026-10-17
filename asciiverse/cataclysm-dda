@@ -1,0 +1,13 @@
+#!/bin/sh
+# Starts Cataclysm: Dark Days Ahead with its read-only data, wherever that is:
+# beside this script (an av install: cataclysm, data/ and share/locale/ in
+# one folder) or under /usr (the system packages: the game in
+# /usr/lib/cataclysm-dda, data and translations in /usr/share/cataclysm-dda).
+# Saves, options and memorials go to $XDG_DATA_HOME/cataclysm-dda (by
+# default ~/.local/share/cataclysm-dda); the game makes the folder itself.
+# Arguments are passed on to the game (cataclysm --help lists them).
+here=$(cd "$(dirname "$0")" && pwd -P)
+if [ -x "$here/cataclysm" ] && [ -d "$here/data" ]; then
+  exec "$here/cataclysm" --basepath "$here/" "$@"
+fi
+exec /usr/lib/cataclysm-dda/cataclysm --basepath /usr/share/cataclysm-dda/ "$@"
