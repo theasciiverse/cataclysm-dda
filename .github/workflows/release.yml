@@ -60,8 +60,10 @@ jobs:
       - name: Smoke test
         run: |
           # the game must find its data through the start script, read the
-          # translations and make its folder in the XDG data folder
-          (cd /tmp && script -qec "TERM=xterm LANG=C.UTF-8 HOME=/tmp/h timeout 20 $PWD/stage/cataclysm-dda" /dev/null </dev/null || true) >smoke.log
+          # translations and make its folder in the XDG data folder; started
+          # from another folder, so the path is taken before the cd
+          stage="$PWD/stage"
+          (cd /tmp && script -qec "TERM=xterm LANG=C.UTF-8 HOME=/tmp/h timeout 20 $stage/cataclysm-dda" /dev/null </dev/null || true) >smoke.log
           grep -aq "language" smoke.log || { tail -c 2000 smoke.log; exit 1; }
           ls /tmp/h/.local/share/cataclysm-dda/config
 
